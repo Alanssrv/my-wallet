@@ -1,0 +1,96 @@
+<div>
+    <div class="w-100 d-flex justify-content-between mt-3 mb-3">
+        <h2 class="fs-3">Categorias</h2>
+        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#createCategory"
+            (click)="startCreateCategory()">
+            Adicionar
+        </button>
+    </div>
+    <table class="table table-striped table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th scope="col">Nome</th>
+                <th scope="col">Tipo</th>
+                <th scope="col">Cor</th>
+                <th class="text-center" scope="col">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @for (category of this.categories; track $index) {
+            <tr>
+                <td>{{ category.name }}</td>
+                <td>
+                    @if (category.type === 'income') {
+                    <span class="badge bg-success"><i class="bi bi-graph-up-arrow"></i> Entrada</span>
+                    } @else {
+                    <span class="badge bg-danger"><i class="bi bi-graph-down-arrow"></i> Saída</span>
+                    }
+                </td>
+                <td>
+                    <span [style.background-color]="category.color" class="badge">
+                        {{ category.color }}
+                    </span>
+                </td>
+                <td class="text-center d-flex justify-content-center gap-2">
+                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createCategory"
+                        (click)="startEditCategory(category)">Editar</button>
+                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category.id)">Excluir</button>
+                </td>
+            </tr>
+            } @empty {
+            <tr>
+                <td class="text-center" colspan="4">Nenhuma categoria cadastrada</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createCategory" tabindex="-1" aria-labelledby="createCategoryLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="createCategoryLabel">
+                    {{ editingCategoryId === null ? 'Criar Categoria' : 'Editar Categoria' }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form #categoryFormRef="ngForm" (ngSubmit)="saveCategory()">
+                    <div class="mb-3 fs-6">
+                        <label for="categoryName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="categoryName" name="categoryName"
+                            [(ngModel)]="categoryForm.name" placeholder="Ex: Alimentação" required>
+                    </div>
+                    <div class="mb-3 fs-6">
+                        <label for="categoryType" class="form-label">Tipo</label>
+                        <div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="categoryType" id="radioIncome"
+                                    value="income" [(ngModel)]="categoryForm.type" style="accent-color: black;">
+                                <label class="form-check-label mt-1" for="radioIncome">Entrada</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="categoryType" id="radioExpense"
+                                    value="expense" [(ngModel)]="categoryForm.type" style="accent-color: black;">
+                                <label class="form-check-label mt-1" for="radioExpense">Saída</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 fs-6">
+                        <label for="categoryColor" class="form-label">Cor</label>
+                        <input type="color" class="form-control form-control-color" id="categoryColor"
+                            name="categoryColor" [(ngModel)]="categoryForm.color" title="Escolha a cor da categoria">
+                    </div>
+                    <button type="submit" class="d-none"></button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-dark" [disabled]="categoryFormRef.invalid"
+                    (click)="saveCategory()" data-bs-dismiss="modal">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

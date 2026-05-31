@@ -2,6 +2,7 @@ import { FormsModule } from '@angular/forms';
 import { Component, inject } from '@angular/core';
 import { Category } from '../../entities/category';
 import { AlertService } from '../../../services/alert/alert.service';
+import { CategoryStorageService } from '../../../services/category-storage.service';
 
 @Component({
   selector: 'app-categories',
@@ -11,8 +12,9 @@ import { AlertService } from '../../../services/alert/alert.service';
 })
 export class CategoriesComponent {
   alertService = inject(AlertService);
+  categoryStorageService = inject(CategoryStorageService);
 
-  categories: Category[] = [];
+  categories: Category[] = this.categoryStorageService.getCategories();
   editingCategoryId: number | null = null;
 
   categoryForm = {
@@ -39,6 +41,7 @@ export class CategoriesComponent {
             )
           : category
       );
+          this.persistCategories();
 
       this.alertService.success('Categoria atualizada com sucesso!');
       this.resetCategoryForm();
@@ -48,12 +51,13 @@ export class CategoriesComponent {
     this.categories = [
       ...this.categories,
       new Category(
-        this.categories.length + 1,
+        this.getNextCategoryId(),
         name,
         this.categoryForm.color,
         this.categoryForm.type
       )
     ];
+    this.persistCategories();
 
     this.alertService.success('Categoria criada com sucesso!');
     this.resetCategoryForm();
@@ -74,6 +78,7 @@ export class CategoriesComponent {
 
   deleteCategory(categoryId: number): void {
     this.categories = this.categories.filter((category) => category.id !== categoryId);
+    this.persistCategories();
 
     if (this.editingCategoryId === categoryId) {
       this.resetCategoryForm();
@@ -87,5 +92,13 @@ export class CategoriesComponent {
       type: 'expense',
       color: '#808080'
     };
+  }
+
+  private getNextCategoryId(): number {
+    return this.categories.reduce((maxId, category) => Math.max(maxId, category.id), 0) + 1;
+  }
+
+  private persistCategories(): void {
+    this.categoryStorageService.saveCategories(this.categories);
   }
 }

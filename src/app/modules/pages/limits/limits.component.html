@@ -33,7 +33,7 @@
 					<strong class="d-block">{{ getCategoryName(limit.categoryId) }}</strong>
 				</td>
 				<td>
-                    <span class="badge text-bg-success threshold-badge">
+                    <span class="badge text-bg-info threshold-badge">
                         {{ formatThreshold(limit.firstValue, limit.maxValue) }}
 					</span>
 				</td>
@@ -92,7 +92,7 @@
 					<div class="threshold-card mt-4">
 						<div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
 							<h3 class="fs-5 mb-0">Primeiro alerta</h3>
-							<span class="badge text-bg-success">Acima do limite inicial</span>
+							<span class="badge text-bg-info">Acima do limite inicial</span>
 						</div>
 						<div class="row g-3">
 							<div class="col-md-4">
@@ -111,7 +111,7 @@
 							</div>
 							<div class="col-md-4">
 								<label class="form-label">Prévia</label>
-								<div class="preview-value text-success">
+								<div class="preview-value text-info">
 									{{ limitForm.firstType === 'percentage' ? (limitForm.firstValue + '%') :
 									formatCurrency(limitForm.firstValue || 0) }}
 									<small>

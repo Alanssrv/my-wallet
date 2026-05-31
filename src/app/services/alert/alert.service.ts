@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Subject } from 'rxjs';
 
-export type AlertType = 'success' | 'warning' | 'error';
+export type AlertType = 'success' | 'warning' | 'error' | 'info';
 
 export interface AlertMessage {
   type: AlertType;
@@ -30,5 +30,9 @@ export class AlertService {
 
   error(text: string, duration = 3000) {
     this.show('error', text, duration);
+  }
+
+  info(text: string, duration = 3000) {
+    this.show('info', text, duration);
   }
 }

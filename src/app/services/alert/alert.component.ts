@@ -39,6 +39,8 @@ export class AlertComponent implements OnInit, OnDestroy {
         return 'text-bg-warning';
       case 'error':
         return 'text-bg-danger';
+      case 'info':
+        return 'text-bg-info';
       default:
         return 'text-bg-secondary';
     }

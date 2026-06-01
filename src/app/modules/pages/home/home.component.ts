@@ -6,7 +6,7 @@ import { LimitStorageService } from '../../../services/limit-storage.service';
 import { MoneyEntryStorageService } from '../../../services/money-entry-storage.service';
 import { Category } from '../../entities/category';
 import { Limit, LimitThreshold } from '../../entities/limit';
-import { MoneyEntry } from '../../entities/money-entry';
+import { MoneyEntry, MoneyOrigin } from '../../entities/money-entry';
 
 @Component({
   selector: 'app-home',
@@ -31,6 +31,12 @@ export class HomeComponent {
   selectedMonth = this.getCurrentMonth();
   selectedDate = this.getCurrentDate();
   activeEntry: MoneyEntry | null = null;
+  readonly originOptions: Array<{ value: MoneyOrigin; label: string; icon?: string; imagePath?: string }> = [
+    { value: 'nubank', label: 'Nubank', imagePath: './images/nu.webp' },
+    { value: 'cash', label: 'Cash', icon: 'bi-cash-stack' },
+    { value: 'bb', label: 'Banco do Brasil (BB)', imagePath: './images/bb.webp' },
+    { value: 'c6', label: 'C6', imagePath: './images/c6.webp' }
+  ];
 
   entryForm = this.createDefaultEntryForm();
 
@@ -99,8 +105,9 @@ export class HomeComponent {
     const value = Number(this.entryForm.value);
     const date = this.entryForm.date;
     const description = this.entryForm.description.trim();
+    const origin = this.entryForm.origin;
 
-    if (categoryId === null || value <= 0 || !date) {
+    if (categoryId === null || value <= 0 || !date || !origin) {
       return;
     }
 
@@ -124,7 +131,7 @@ export class HomeComponent {
       }
     }
 
-    this.entries = [...this.entries, new MoneyEntry(date, value, categoryId, description)];
+    this.entries = [...this.entries, new MoneyEntry(date, value, categoryId, description, origin)];
     this.moneyEntryStorageService.saveEntries(this.entries);
     this.selectedDate = date;
     this.activeEntry = null;
@@ -164,6 +171,18 @@ export class HomeComponent {
 
   hasEntryDescription(entry: MoneyEntry): boolean {
     return entry.description.trim().length > 0;
+  }
+
+  getOriginIcon(origin: MoneyOrigin): string {
+    return this.originOptions.find((option) => option.value === origin)?.icon ?? 'bi-wallet2';
+  }
+
+  getOriginLabel(origin: MoneyOrigin): string {
+    return this.originOptions.find((option) => option.value === origin)?.label ?? origin;
+  }
+
+  getOriginImagePath(origin: MoneyOrigin): string | null {
+    return this.originOptions.find((option) => option.value === origin)?.imagePath ?? null;
   }
 
   getCellTheme(category: Category, date: string): string {
@@ -210,7 +229,8 @@ export class HomeComponent {
       date,
       categoryId: this.visibleCategories[0]?.id ?? null,
       value: 0,
-      description: ''
+      description: '',
+      origin: 'nubank' as MoneyOrigin
     };
   }
 

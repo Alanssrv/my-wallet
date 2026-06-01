@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MoneyEntry } from '../modules/entities/money-entry';
+import { MoneyEntry, MoneyOrigin } from '../modules/entities/money-entry';
 
 @Injectable({
   providedIn: 'root'
@@ -15,7 +15,13 @@ export class MoneyEntryStorageService {
     }
 
     return storedEntries.map(
-      (entry) => new MoneyEntry(entry.date, entry.value, entry.categoryId, entry.description ?? '')
+      (entry) => new MoneyEntry(
+        entry.date,
+        entry.value,
+        entry.categoryId,
+        entry.description ?? '',
+        (entry.origin as MoneyOrigin | undefined) ?? 'cash'
+      )
     );
   }
 

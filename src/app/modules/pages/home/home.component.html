@@ -82,9 +82,19 @@
 								<div class="entry-list">
 									@for (entry of cellEntries; track entry) {
 									<div class="entry-item" [class.active-entry]="isEntryActive(entry)">
-										<button type="button" class="entry-pill" (click)="toggleEntryActions(entry)">
-											{{ formatCurrency(entry.value) }}
-										</button>
+                                        <div class="position-relative">
+                                            <button type="button" class="entry-pill" (click)="toggleEntryActions(entry)">
+                                                {{ formatCurrency(entry.value) }}
+                                            </button>
+                                            <span class="entry-origin" [attr.aria-label]="getOriginLabel(entry.origin)"
+                                                [attr.title]="getOriginLabel(entry.origin)">
+                                                @if (getOriginImagePath(entry.origin); as originImagePath) {
+                                                <img [src]="originImagePath" [alt]="getOriginLabel(entry.origin)" class="entry-origin-image">
+                                                } @else {
+                                                <i class="bi" [class]="'bi ' + getOriginIcon(entry.origin)"></i>
+                                                }
+                                            </span>
+                                        </div>
 										@if (hasEntryDescription(entry)) {
 										<div class="entry-description">{{ entry.description }}</div>
 										}
@@ -142,6 +152,25 @@
 						<label for="entryValue" class="form-label">Valor</label>
 						<input id="entryValue" name="entryValue" type="number" class="form-control"
 							[(ngModel)]="entryForm.value" min="0.01" step="0.01" placeholder="Ex: 125.90" required>
+					</div>
+					<div class="mt-3 mb-0">
+						<label for="entryOrigin" class="form-label">Origem do dinheiro</label>
+						<div id="entryOrigin" class="origin-radio-group" role="radiogroup" aria-label="Origem do dinheiro">
+							@for (origin of originOptions; track origin.value) {
+							<label class="origin-radio-card" [class.active-origin]="entryForm.origin === origin.value"
+								[attr.aria-label]="origin.label" [attr.title]="origin.label">
+								<input type="radio" name="entryOrigin" [value]="origin.value" [(ngModel)]="entryForm.origin"
+									required>
+								<span class="origin-radio-face">
+									@if (origin.imagePath) {
+									<img [src]="origin.imagePath" [alt]="origin.label" class="origin-radio-image">
+									} @else {
+									<i class="bi" [class]="'bi ' + origin.icon"></i>
+									}
+								</span>
+							</label>
+							}
+						</div>
 					</div>
 					<div class="mt-3 mb-0">
 						<label for="entryDescription" class="form-label">Descricao</label>

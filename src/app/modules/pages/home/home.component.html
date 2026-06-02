@@ -28,6 +28,23 @@
 		Cadastre categorias para começar a registrar entradas e saidas.
 	</div>
 	} @else {
+	<div class="origin-radio-group mb-4" role="radiogroup" aria-label="Filtrar por origem do dinheiro">
+		@for (origin of originOptions; track origin.value) {
+		<label class="origin-radio-card" [class.active-origin]="selectedOriginFilter === origin.value"
+			[attr.aria-label]="origin.label" [attr.title]="origin.label"
+			(click)="toggleOriginFilter(origin.value)">
+			<input type="radio" name="originFilter" [value]="origin.value" 
+				[checked]="selectedOriginFilter === origin.value" disabled>
+			<span class="origin-radio-face">
+				@if (origin.imagePath) {
+				<img [src]="origin.imagePath" [alt]="origin.label" class="origin-radio-image">
+				} @else {
+				<i class="bi" [class]="'bi ' + origin.icon"></i>
+				}
+			</span>
+		</label>
+		}
+	</div>
 	<div class="summary-grid mb-4">
 		<article class="summary-card income-card">
 			<span class="summary-label">Entradas no mes</span>
@@ -99,10 +116,15 @@
 										<div class="entry-description">{{ entry.description }}</div>
 										}
 										@if (isEntryActive(entry)) {
-										<button type="button" class="entry-remove" (click)="removeEntry(entry, $event)"
-											aria-label="Remover valor">
-											<i class="bi bi-trash"></i>
-										</button>
+										<div class="d-flex gap-1">
+											<button type="button" class="entry-action entry-edit" (click)="editEntry(entry, $event)" aria-label="Editar valor">
+												<i class="bi bi-pencil"></i>
+											</button>
+											<button type="button" class="entry-action entry-remove" (click)="removeEntry(entry, $event)"
+												aria-label="Remover valor">
+												<i class="bi bi-trash"></i>
+											</button>
+										</div>
 										}
 									</div>
 									}
@@ -129,8 +151,15 @@
 	<div class="modal-dialog">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h1 class="modal-title fs-5" id="createMoneyEntryLabel">Registrar valor</h1>
-				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				<h1 class="modal-title fs-5" id="createMoneyEntryLabel">
+					@if (editingEntry) {
+					Editar valor
+					} @else {
+					Registrar valor
+					}
+				</h1>
+				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" 
+					(click)="editingEntry = null"></button>
 			</div>
 			<div class="modal-body">
 				<form #entryFormRef="ngForm" (ngSubmit)="saveEntry()">

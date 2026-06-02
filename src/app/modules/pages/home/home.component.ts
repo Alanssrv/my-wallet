@@ -31,6 +31,8 @@ export class HomeComponent {
   selectedMonth = this.getCurrentMonth();
   selectedDate = this.getCurrentDate();
   activeEntry: MoneyEntry | null = null;
+  editingEntry: MoneyEntry | null = null;
+  selectedOriginFilter: MoneyOrigin | null = null;
   readonly originOptions: Array<{ value: MoneyOrigin; label: string; icon?: string; imagePath?: string }> = [
     { value: 'nubank', label: 'Nubank', imagePath: './images/nu.webp' },
     { value: 'cash', label: 'Cash', icon: 'bi-cash-stack' },
@@ -61,7 +63,13 @@ export class HomeComponent {
   }
 
   get monthEntries(): MoneyEntry[] {
-    return this.entries.filter((entry) => entry.date.startsWith(this.selectedMonth));
+    let filtered = this.entries.filter((entry) => entry.date.startsWith(this.selectedMonth));
+    
+    if (this.selectedOriginFilter) {
+      filtered = filtered.filter((entry) => entry.origin === this.selectedOriginFilter);
+    }
+    
+    return filtered;
   }
 
   get selectedDayLabel(): string {
@@ -92,6 +100,7 @@ export class HomeComponent {
 
   startCreateEntryForSelectedDay(): void {
     this.reloadData();
+    this.editingEntry = null;
     this.entryForm = this.createDefaultEntryForm(this.selectedDate);
   }
 
@@ -121,7 +130,11 @@ export class HomeComponent {
     const limit = this.getLimit(categoryId);
     if (category?.type === 'expense' && limit) {
       const monthTotal = this.getCategoryMonthTotal(categoryId);
-      const newTotal = monthTotal + value;
+      const currentTotal = this.editingEntry
+        ? monthTotal - this.editingEntry.value
+        : monthTotal;
+      const newTotal = currentTotal + value;
+      
       if (newTotal > limit.maxValue) {
         this.alertService.error('Acima do limite máximo');
       } else if (newTotal > this.resolveThresholdValue(limit.maxValue, limit.warningValue)) {
@@ -131,12 +144,27 @@ export class HomeComponent {
       }
     }
 
-    this.entries = [...this.entries, new MoneyEntry(date, value, categoryId, description, origin)];
+    if (this.editingEntry) {
+      // Update existing entry
+      const editingIndex = this.entries.indexOf(this.editingEntry);
+      this.editingEntry.date = date;
+      this.editingEntry.value = value;
+      this.editingEntry.categoryId = categoryId;
+      this.editingEntry.description = description;
+      this.editingEntry.origin = origin;
+      this.entries = [...this.entries];
+      this.alertService.success('Valor atualizado com sucesso!');
+    } else {
+      // Create new entry
+      this.entries = [...this.entries, new MoneyEntry(date, value, categoryId, description, origin)];
+      this.alertService.success('Valor registrado com sucesso!');
+    }
+
     this.moneyEntryStorageService.saveEntries(this.entries);
     this.selectedDate = date;
     this.activeEntry = null;
+    this.editingEntry = null;
     this.entryForm = this.createDefaultEntryForm(date);
-    this.alertService.success('Valor registrado com sucesso!');
   }
 
   formatCurrency(value: number): string {
@@ -167,6 +195,29 @@ export class HomeComponent {
     this.moneyEntryStorageService.saveEntries(this.entries);
     this.activeEntry = null;
     this.alertService.warning('Valor removido com sucesso!');
+  }
+
+  editEntry(entry: MoneyEntry, event: Event): void {
+    event.stopPropagation();
+    this.editingEntry = entry;
+    this.entryForm = {
+      date: entry.date,
+      categoryId: entry.categoryId,
+      value: entry.value,
+      description: entry.description,
+      origin: entry.origin
+    };
+    this.activeEntry = null;
+    // Open the modal
+    const modal = document.getElementById('createMoneyEntry');
+    if (modal) {
+      const bootstrapModal = new (window as any).bootstrap.Modal(modal);
+      bootstrapModal.show();
+    }
+  }
+
+  toggleOriginFilter(origin: MoneyOrigin): void {
+    this.selectedOriginFilter = this.selectedOriginFilter === origin ? null : origin;
   }
 
   hasEntryDescription(entry: MoneyEntry): boolean {

@@ -1,0 +1,77 @@
+<div>
+    <div class="w-100 d-flex justify-content-between align-items-center mt-3 mb-3">
+        <div>
+            <h2 class="fs-3">Tags</h2>
+            <p class="text-muted mb-0">Configure tags para organizar suas movimentações.</p>
+        </div>
+        <button class="btn btn-outline-dark" data-bs-toggle="modal" data-bs-target="#createTag"
+            (click)="startCreateTag()">
+            Adicionar
+        </button>
+    </div>
+
+    <div class="rounded-table">
+        <div class="tags-container">
+            @if (tags.length === 0) {
+            <div class="alert alert-info" role="alert">
+                Nenhuma tag cadastrada
+            </div>
+            } @else {
+            <div class="tags-list">
+                @for (tag of tags; track tag.id) {
+                <div class="tag-item">
+                    <div class="tag-content">
+                        <span [style.background-color]="tag.color" class="tag-color-badge">
+                            {{ tag.name }}
+                        </span>
+                    </div>
+                    <div class="tag-actions">
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
+                            data-bs-target="#createTag" (click)="startEditTag(tag)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="deleteTag(tag.id)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+                }
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createTag" tabindex="-1" aria-labelledby="createTagLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="createTagLabel">
+                    {{ editingTagId === null ? 'Criar Tag' : 'Editar Tag' }}
+                </h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form (ngSubmit)="saveTag()" #tagFormRef="ngForm">
+                    <div class="mb-3 fs-6">
+                        <label for="tagName" class="form-label">Nome</label>
+                        <input type="text" class="form-control" id="tagName" name="tagName"
+                            [(ngModel)]="tagForm.name" placeholder="Ex: Urgente" required>
+                    </div>
+                    <div class="mb-3 fs-6">
+                        <label for="tagColor" class="form-label">Cor</label>
+                        <input type="color" class="form-control form-control-color" id="tagColor"
+                            name="tagColor" [(ngModel)]="tagForm.color" title="Escolha a cor da tag">
+                    </div>
+                    <button type="submit" class="d-none"></button>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-dark" [disabled]="tagFormRef.invalid"
+                    (click)="saveTag()" data-bs-dismiss="modal">Salvar</button>
+            </div>
+        </div>
+    </div>
+</div>

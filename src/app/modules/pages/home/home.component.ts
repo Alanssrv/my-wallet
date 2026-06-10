@@ -7,10 +7,11 @@ import { MoneyEntryStorageService } from '../../../services/money-entry-storage.
 import { Category } from '../../entities/category';
 import { Limit, LimitThreshold } from '../../entities/limit';
 import { MoneyEntry, MoneyOrigin } from '../../entities/money-entry';
+import { TagSelectorComponent } from '../../components/tag-selector/tag-selector.component';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule],
+  imports: [FormsModule, TagSelectorComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -115,6 +116,7 @@ export class HomeComponent {
     const date = this.entryForm.date;
     const description = this.entryForm.description.trim();
     const origin = this.entryForm.origin;
+    const tagIds = this.entryForm.tagIds;
 
     if (categoryId === null || value <= 0 || !date || !origin) {
       return;
@@ -152,11 +154,12 @@ export class HomeComponent {
       this.editingEntry.categoryId = categoryId;
       this.editingEntry.description = description;
       this.editingEntry.origin = origin;
+      this.editingEntry.tagIds = tagIds;
       this.entries = [...this.entries];
       this.alertService.success('Valor atualizado com sucesso!');
     } else {
       // Create new entry
-      this.entries = [...this.entries, new MoneyEntry(date, value, categoryId, description, origin)];
+      this.entries = [...this.entries, new MoneyEntry(date, value, categoryId, description, origin, tagIds)];
       this.alertService.success('Valor registrado com sucesso!');
     }
 
@@ -204,6 +207,7 @@ export class HomeComponent {
       date: entry.date,
       categoryId: entry.categoryId,
       value: entry.value,
+      tagIds: entry.tagIds,
       description: entry.description,
       origin: entry.origin
     };
@@ -281,6 +285,7 @@ export class HomeComponent {
       categoryId: this.visibleCategories[0]?.id ?? null,
       value: 0,
       description: '',
+      tagIds: [] as number[],
       origin: 'nubank' as MoneyOrigin
     };
   }

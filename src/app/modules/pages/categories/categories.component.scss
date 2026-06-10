@@ -1,4 +1,9 @@
 :host {
+    .rounded-table {
+        border-radius: 0.5rem !important;
+        overflow: hidden;
+    }
+
     .form-check-input:checked {
         background-color: black !important;
         border-color: black !important;

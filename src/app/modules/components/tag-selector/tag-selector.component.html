@@ -1,0 +1,28 @@
+<div class="tag-selector">
+    <div class="dropdown">
+        <button class="btn dropdown-toggle w-100 text-start d-flex flex-wrap align-items-center gap-2"
+            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            @for (item of selectedItems; track item.id) {
+            <span class="badge text-bg-light d-inline-flex align-items-center gap-1">
+                {{ item.name }}
+                <span class="btn-close btn-close-dark ms-1" style="font-size: 10px;"
+                    aria-label="Remove" (click)="$event.preventDefault(); $event.stopPropagation(); removeItem(item.id.toString())"></span>
+            </span>
+            } @empty {
+            <span class="text-muted">Selecionar tags</span>
+            }
+        </button>
+
+        <ul class="dropdown-menu w-100 p-2" #dropdownMenu>
+            @for (option of availableTags; track option.id) {
+            <li>
+                <label class="dropdown-item d-flex align-items-center gap-2">
+                    <input type="checkbox" class="form-check-input m-0" [checked]="isSelected(option.id.toString())"
+                        (change)="toggleSelection(option, $any($event.target).checked)" />
+                    <span>{{ option.name }}</span>
+                </label>
+            </li>
+            }
+        </ul>
+    </div>
+</div>

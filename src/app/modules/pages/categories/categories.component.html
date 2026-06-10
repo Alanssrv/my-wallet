@@ -9,44 +9,50 @@
             Adicionar
         </button>
     </div>
-    <table class="table table-striped table-hover">
-        <thead class="table-dark">
-            <tr>
-                <th scope="col">Nome</th>
-                <th scope="col">Tipo</th>
-                <th scope="col">Cor</th>
-                <th class="text-center" scope="col">Ações</th>
-            </tr>
-        </thead>
-        <tbody>
-            @for (category of this.categories; track $index) {
-            <tr>
-                <td>{{ category.name }}</td>
-                <td>
-                    @if (category.type === 'income') {
-                    <span class="badge bg-success"><i class="bi bi-graph-up-arrow"></i> Entrada</span>
-                    } @else {
-                    <span class="badge bg-danger"><i class="bi bi-graph-down-arrow"></i> Saída</span>
-                    }
-                </td>
-                <td>
-                    <span [style.background-color]="category.color" class="badge">
-                        {{ category.color }}
-                    </span>
-                </td>
-                <td class="text-center d-flex justify-content-center gap-2">
-                    <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createCategory"
-                        (click)="startEditCategory(category)">Editar</button>
-                    <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category.id)">Excluir</button>
-                </td>
-            </tr>
-            } @empty {
-            <tr>
-                <td class="text-center" colspan="4">Nenhuma categoria cadastrada</td>
-            </tr>
-            }
-        </tbody>
-    </table>
+    <div class="rounded-table">
+        <table class="table table-striped table-hover table-bordered m-0">
+            <thead class="table-dark">
+                <tr>
+                    <th scope="col">Nome</th>
+                    <th scope="col">Tipo</th>
+                    <th scope="col">Cor</th>
+                    <th class="text-center" scope="col">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                @for (category of this.categories; track $index) {
+                <tr>
+                    <td>{{ category.name }}</td>
+                    <td>
+                        @if (category.type === 'income') {
+                        <span class="badge bg-success"><i class="bi bi-graph-up-arrow"></i> Entrada</span>
+                        } @else {
+                        <span class="badge bg-danger"><i class="bi bi-graph-down-arrow"></i> Saída</span>
+                        }
+                    </td>
+                    <td>
+                        <span [style.background-color]="category.color" class="badge">
+                            {{ category.color }}
+                        </span>
+                    </td>
+                    <td class="text-center d-flex justify-content-center gap-2">
+                        <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#createCategory"
+                            (click)="startEditCategory(category)">Editar</button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="deleteCategory(category.id)">Excluir</button>
+                    </td>
+                </tr>
+                } @empty {
+                <tr>
+                    <td class="text-center" colspan="4">Nenhuma categoria cadastrada</td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mt-5">
+        <app-tags></app-tags>
+    </div>
 </div>
 
 <!-- Modal -->

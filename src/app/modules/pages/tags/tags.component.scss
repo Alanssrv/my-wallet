@@ -1,0 +1,49 @@
+:host {
+    .tags-container {
+        padding: 1rem 0;
+    }
+
+    .tags-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .tag-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.5rem 1rem;
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        border: 1px solid #dee2e6;
+        transition: all 0.2s ease;
+
+        &:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .tag-content {
+        flex: 1;
+    }
+
+    .tag-color-badge {
+        padding: 0.35rem 0.65rem;
+        color: white;
+        border-radius: 0.25rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        display: inline-block;
+    }
+
+    .tag-actions {
+        display: flex;
+        gap: 0.25rem;
+
+        button {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.75rem;
+        }
+    }
+}

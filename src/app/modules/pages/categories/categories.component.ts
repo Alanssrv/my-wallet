@@ -1,12 +1,14 @@
 import { FormsModule } from '@angular/forms';
 import { Component, inject } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { Category } from '../../entities/category';
 import { AlertService } from '../../../services/alert/alert.service';
 import { CategoryStorageService } from '../../../services/category-storage.service';
+import { TagsComponent } from '../tags/tags.component';
 
 @Component({
   selector: 'app-categories',
-  imports: [FormsModule],
+  imports: [FormsModule, CommonModule, TagsComponent],
   templateUrl: './categories.component.html',
   styleUrl: './categories.component.scss'
 })

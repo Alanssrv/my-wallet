@@ -1,33 +1,31 @@
 import { Injectable } from '@angular/core';
-import { MoneyEntry, MoneyOrigin } from '../modules/entities/money-entry';
+import { Tag } from '../modules/entities/tag';
 
 @Injectable({
   providedIn: 'root'
 })
-export class MoneyEntryStorageService {
-  private readonly storageKey = 'wallet.money-entries';
+export class TagStorageService {
+  private readonly storageKey = 'wallet.tags';
 
-  getEntries(): MoneyEntry[] {
-    const storedEntries = this.readStorage<MoneyEntry[]>();
+  getTags(): Tag[] {
+    const storedTags = this.readStorage<Tag[]>();
 
-    if (!storedEntries) {
+    if (!storedTags) {
       return [];
     }
 
-    return storedEntries.map(
-      (entry) => new MoneyEntry(
-        entry.date,
-        entry.value,
-        entry.categoryId,
-        entry.description ?? '',
-        (entry.origin as MoneyOrigin | undefined) ?? 'cash',
-        entry.tagIds ?? []
-      )
+    return storedTags.map(
+      (tag) => new Tag(tag.id, tag.name, tag.color)
     );
   }
 
-  saveEntries(entries: MoneyEntry[]): void {
-    this.writeStorage(entries);
+  saveTags(tags: Tag[]): void {
+    this.writeStorage(tags);
+  }
+
+  getTagsByIds(tagIds: number[]): Tag[] {
+    const allTags = this.getTags();
+    return allTags.filter(tag => tagIds.includes(tag.id));
   }
 
   private readStorage<T>(): T | null {

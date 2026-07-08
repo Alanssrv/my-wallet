@@ -45,17 +45,37 @@
 		</label>
 		}
 	</div>
+	<label class="summary-label d-flex align-items-center gap-2 mb-2">
+		<span class="text-nowrap">Movimentações Gerais (Carteira)</span><hr class="w-100">
+	</label>
 	<div class="summary-grid mb-4">
 		<article class="summary-card income-card">
-			<span class="summary-label">Entradas no mes</span>
+			<span class="summary-label">Entradas</span>
+			<strong>{{ formatCurrency(incomeTotal) }}</strong>
+		</article>
+		<article class="summary-card expense-card">
+			<span class="summary-label">Saidas</span>
+			<strong>{{ formatCurrency(expenseTotal) }}</strong>
+		</article>
+		<article class="summary-card balance-card">
+			<span class="summary-label">Saldo</span>
+			<strong>{{ formatCurrency(balanceTotal) }}</strong>
+		</article>
+	</div>
+	<label class="summary-label d-flex align-items-center gap-2 mb-2">
+		<span class="text-nowrap">Movimentações do mês ({{ selectedMonth | date:'MM' }})</span><hr class="w-100">
+	</label>
+	<div class="summary-grid mb-4">
+		<article class="summary-card income-card">
+			<span class="summary-label">Entradas</span>
 			<strong>{{ formatCurrency(monthIncomeTotal) }}</strong>
 		</article>
 		<article class="summary-card expense-card">
-			<span class="summary-label">Saidas no mes</span>
+			<span class="summary-label">Saidas</span>
 			<strong>{{ formatCurrency(monthExpenseTotal) }}</strong>
 		</article>
 		<article class="summary-card balance-card">
-			<span class="summary-label">Saldo do mes</span>
+			<span class="summary-label">Saldo</span>
 			<strong>{{ formatCurrency(monthBalance) }}</strong>
 		</article>
 	</div>

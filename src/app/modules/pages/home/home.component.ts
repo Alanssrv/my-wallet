@@ -8,10 +8,11 @@ import { Category } from '../../entities/category';
 import { Limit, LimitThreshold } from '../../entities/limit';
 import { MoneyEntry, MoneyOrigin } from '../../entities/money-entry';
 import { TagSelectorComponent } from '../../components/tag-selector/tag-selector.component';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-home',
-  imports: [FormsModule, TagSelectorComponent],
+  imports: [FormsModule, TagSelectorComponent, DatePipe],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -87,6 +88,25 @@ export class HomeComponent {
 
   get monthBalance(): number {
     return this.monthIncomeTotal - this.monthExpenseTotal;
+  }
+
+  get totalEntries(): MoneyEntry[] {
+    if (this.selectedOriginFilter) {
+      return this.entries.filter((entry) => entry.origin === this.selectedOriginFilter);
+    }
+    return this.entries;
+  }
+  
+  get incomeTotal(): number {
+    return this.getTotalByType('income');
+  }
+
+  get expenseTotal(): number {
+    return this.getTotalByType('expense');
+  }
+
+  get balanceTotal(): number {
+    return this.incomeTotal - this.expenseTotal;
   }
 
   onMonthChange(): void {
@@ -328,6 +348,16 @@ export class HomeComponent {
       .map((category) => category.id);
 
     return this.monthEntries
+      .filter((entry) => categoryIds.includes(entry.categoryId))
+      .reduce((total, entry) => total + entry.value, 0);
+  }
+
+  private getTotalByType(type: Category['type']): number {
+    const categoryIds = this.categories
+      .filter((category) => category.type === type)
+      .map((category) => category.id);
+
+    return this.totalEntries
       .filter((entry) => categoryIds.includes(entry.categoryId))
       .reduce((total, entry) => total + entry.value, 0);
   }

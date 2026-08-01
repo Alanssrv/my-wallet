@@ -16,11 +16,11 @@ export const routes: Routes = [
     {
         path: 'limits',
         component: LimitsComponent
-    },
-    {
-        path: 'summaries',
-        component: SummariesComponent
-    },
+    }
+    // {
+    //     path: 'summaries',
+    //     component: SummariesComponent
+    // },
     // {
     //     path: '**',
     //     component: NotFoundComponent
